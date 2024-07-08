@@ -19,7 +19,7 @@ export type CacheStore = {
     /** delete a key from the cache */
     del(key: string): Promise<void>
     /** flush all data */
-    flushAll(): Promise>void>
+    flushAll(): Promise<void>
 }
 
 export type SocketConfig = {
