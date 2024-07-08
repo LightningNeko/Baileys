@@ -139,7 +139,7 @@ export const addTransactionCapability = (
 					Object.assign(mutations[key], data[key])
 				}
 			} else {
-				return await state.set(data)
+				return state.set(data)
 			}
 		},
 		isInTransaction,
