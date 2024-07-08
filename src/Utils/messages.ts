@@ -139,7 +139,7 @@ export const prepareWAMessageMedia = async(
 
 	// check for cache hit
 	if(cacheableKey) {
-		const mediaBuff = options.mediaCache!.get<Buffer>(cacheableKey)
+		const mediaBuff = await options.mediaCache!.get<Buffer>(cacheableKey)
 		if(mediaBuff) {
 			logger?.debug({ cacheableKey }, 'got media cache hit')
 
@@ -260,8 +260,23 @@ export const prepareWAMessageMedia = async(
 	}
 
 	if(cacheableKey) {
-		logger?.debug({ cacheableKey }, 'set cache')
-		options.mediaCache!.set(cacheableKey, WAProto.Message.encode(obj).finish())
+		const media = WAProto.Message.fromObject({
+			[`${mediaType}Message`]: MessageTypeProto[mediaType].fromObject(
+				{
+					url: mediaUrl,
+					directPath,
+					mediaKey,
+					fileEncSha256,
+					fileSha256,
+					fileLength,
+					mediaKeyTimestamp: unixTimestampSeconds(),
+					...uploadData,
+					media: undefined,
+					caption: undefined
+				}
+			)
+		})
+		options.mediaCache!.set(cacheableKey, WAProto.Message.encode(media).finish())
 	}
 
 	return obj
